@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/tarang/Documents/c/v3.0lamewav2mp3/src/lameEngine.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+dirent.h
+-
+lame/lame.h
+-
+time.h
+-
+pthread.h
+-
+libconfig.h
+-
+windows.h
+-
+unistd.h
+-
+

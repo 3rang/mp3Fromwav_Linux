@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/tarang/Documents/cpp/src/lameEngine.cpp
+iostream
+-
+iomanip
+-
+cstdlib
+-
+libconfig.h++
+-
+lame/lame.h
+-
+string.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+dirent.h
+-
+lame/lame.h
+-
+time.h
+-
+thread
+-
+libconfig.h
+-
+windows.h
+-
+unistd.h
+-
+
