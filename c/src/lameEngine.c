@@ -34,7 +34,7 @@ typedef struct _tHread_Data_t {
 
 #define SoftwareVersion 3.0
 
-int fRq
+int SamplingRate;
 
 /***********************************************************************
  *Function Name :- readConfig
@@ -63,8 +63,8 @@ int readConfig(void)
 		return(EXIT_FAILURE);
 	}
 
-	if (config_lookup_int(cFi, "SamplingRate", &fRq))
-		printf("Sample: %d\n", fRq);
+	if (config_lookup_int(cFi, "SamplingRate", &SamplingRate))
+		printf("Sample: %d\n", SamplingRate);
 
 	config_destroy(cFi);
 
@@ -86,7 +86,7 @@ void lameEncoderInit(void)
 {
 	lame = lame_init();
 	/*    lame_set_num_channels(lame,2);//1 is single channel, 2 is the default setting*/
-	lame_set_in_samplerate(lame, fRq); // consumer audio like CDs use 44.1KHz sampling,
+	lame_set_in_samplerate(lame, SamplingRate); // consumer audio like CDs use 44.1KHz sampling,
 	lame_set_VBR(lame, vbr_default);
 
 	/*            lame_set_brate(lame,8);*/
@@ -183,7 +183,6 @@ void *mp3Fromwav(void* arg){
 	lameEncoderInit();
 
 	do {
-		printf("converting %s ...\n", fileNameNew);
 		read = fread(wav_Buffer, 2*sizeof(short int), WAV_SIZE, wav_Fd);
 		if (read == 0)
 		{
@@ -225,7 +224,7 @@ int main(int argc, char *argv[])
 
 	if( argc != 2 )
 	{
-		fprintf( stderr, "Usage: %s <path_to_folder_with_wav_files>\n", argv[0] );
+		fprintf( stderr, "Usage: %s <path_of_wav_files>\n", argv[0] );
 
 		/* exit with failure */
 		return( EXIT_FAILURE );
@@ -237,7 +236,7 @@ int main(int argc, char *argv[])
 
 	startClk = clock();
 	
-	printf(" SoftwareVersion of lameEngine is %d \n",SoftwareVersion);
+	printf(" SoftwareVersion of lameEngine is %lf \n",SoftwareVersion);
 
 	readConfig();	
 

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/tarang/Documents/c/v3.0lamewav2mp3/src/lameEngine.c
+/home/tarang/Documents/github/mp3Fromwav_Linux/c/src/lameEngine.c
 stdio.h
 -
 stdlib.h

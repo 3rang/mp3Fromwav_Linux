@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/tarang/Documents/cpp/src/lameEngine.cpp" "/home/tarang/Documents/cpp/build/CMakeFiles/wav2Mp3.dir/src/lameEngine.cpp.o"
+  "/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/src/lameEngine.cpp" "/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/build/CMakeFiles/wav2Mp3.dir/src/lameEngine.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

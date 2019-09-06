@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/tarang/Documents/c/v3.0lamewav2mp3/src/lameEngine.c" "/home/tarang/Documents/c/v3.0lamewav2mp3/build/CMakeFiles/wav2Mp3.dir/src/lameEngine.c.o"
+  "/home/tarang/Documents/github/mp3Fromwav_Linux/c/src/lameEngine.c" "/home/tarang/Documents/github/mp3Fromwav_Linux/c/build/CMakeFiles/wav2Mp3.dir/src/lameEngine.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

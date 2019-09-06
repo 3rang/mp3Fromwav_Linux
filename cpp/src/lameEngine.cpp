@@ -156,7 +156,7 @@ int readConfig(void)
   }
   catch(const FileIOException &fioex)
   {
-    std::cerr << "I/O error while reading file." << std::endl;
+    std::cerr << "error while reading file." << std::endl;
     return(EXIT_FAILURE);
   }
   catch(const ParseException &pex)
@@ -199,13 +199,10 @@ char *renameFile(char *fName)
         if(NULL == (fLocal = new char[(strlen (fName) + 1 )]))
                 return NULL;
         strcpy(fLocal,fName);
-	//printf("flaocl1 =%s\n",fLocal);
         rmDot = strrchr (fLocal, '.');
 	printf("rmdot=%s\n",rmDot);
         if ( NULL != rmDot)
                 *rmDot = '\0';
-        //strcat(rmDot,fNewExt);
-//	printf("flaocl2 =%s\n",fLocal);
         strcat(fLocal,fNewExt.c_str());
         return fLocal;
 }
@@ -230,7 +227,6 @@ void *mp3Fromwav(void *arg){
         char *address = inData-> st_folderName;
         int read, write;
 
-	printf(" data =%s adr = %s \n",fileName,address);
         // obtain the abosolut path of the file to be converted
         char AbsltAddrchange[255];
         strcpy(AbsltAddrchange, address);
@@ -246,8 +242,8 @@ void *mp3Fromwav(void *arg){
         }
 
         char *fileNameNew=renameFile(fileName);
-        // obtain the abosolut path of the file to be created
-	printf("new = %s\n",fileNameNew);      
+        
+	// obtain the abosolut path of the file to be created
   	char AbsltAddrNew[255];
         strcpy(AbsltAddrNew, address);
         strcat(AbsltAddrNew, "/");
@@ -255,24 +251,22 @@ void *mp3Fromwav(void *arg){
 
         FILE *mp3_Fd = fopen(AbsltAddrNew, "wb");
  
-	printf("abs= %s\n",AbsltAddrNew);
 	short int wav_Buffer[WAV_SIZE*2];
         unsigned char mp3_Buffer[MP3_SIZE];
 
-	lameEngine l;
+	lameEngine lameObj;
 	
-	l.set_in_samplerate(rate);
-	l.set_VBR(vbr_default);
-	l.init_params();
+	lameObj.set_in_samplerate(SamplingRate);
+	lameObj.set_VBR(vbr_default);
+	lameObj.init_params();
 	
 
     do {
-	printf("in\n");
         read = fread(wav_Buffer, 2*sizeof(short int), WAV_SIZE, wav_Fd);
         if (read == 0)
-            write = l.encode_flush(mp3_Buffer, MP3_SIZE);
+            write = lameObj.encode_flush(mp3_Buffer, MP3_SIZE);
         else
-            write = l.encode_buffer_interleaved(wav_Buffer, read, mp3_Buffer, MP3_SIZE);
+            write = lameObj.encode_buffer_interleaved(wav_Buffer, read, mp3_Buffer, MP3_SIZE);
         fwrite(mp3_Buffer, write, 1, mp3_Fd);
     } while (read != 0);
 
@@ -309,7 +303,7 @@ int main(int argc,char* argv[])
 	if (argc != 2) {
         cout << "Usage:  " << argv[0] <<"   </path of .wave file>  " << endl;
         return -1;
-    }
+    	}
 
 	string l_folderAddr = argv[1];
 
@@ -334,7 +328,6 @@ int main(int argc,char* argv[])
                                 if(!strcmp(l_fileName + strlen(l_fileName) - strlen(".wav"), ".wav"))
                                 {
 
-                                 //       printf("Find one wav file %s\n", l_fileName);
                                         numberFile ++;
 
                                         tHread_Data_t thR_Data; // array of parameters to be passed into thread
@@ -357,17 +350,17 @@ int main(int argc,char* argv[])
                         enTfd = readdir(directoryFd);
                 }
 
-                printf("The number of files is: %d\n", numberFile);
+                cout << " number of files is: " << numberFile << endl;
 
         }else{
-                printf("The input address can not be found, please check the input.\n");
+                cout << " please check the input " << endl;
         }
 
         closedir(directoryFd);
 
  	stopClk = clock();
         duraTion = (double)(stopClk - startClk) / CLOCKS_PER_SEC;
-        printf("The total time is: %f\n", duraTion);
+        cout << "The total time is: "<< duraTion <<endl;
         return EXIT_SUCCESS;
 
 }
