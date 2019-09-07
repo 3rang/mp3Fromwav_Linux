@@ -12,7 +12,8 @@ file(GLOB SRC ${SRC_FILE}/*.c)
 
 add_executable(${BIN_NAME} ${SRC})
 
-target_link_libraries(${BIN_NAME} ${LIB_PATH} -lm -lpthread -lconfig)
+#target_link_libraries(${BIN_NAME} ${LIB_PATH} -lm -lpthread -lconfig)
+target_link_libraries(${BIN_NAME} -lmp3lame -lm -lpthread -lconfig)
 
 install(TARGETS ${BIN_NAME}  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 

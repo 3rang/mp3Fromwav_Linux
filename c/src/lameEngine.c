@@ -22,7 +22,7 @@
 #endif
 
 
-lame_t lame;
+static lame_t lame;
 
 typedef struct _tHread_Data_t {
 	char* st_fileName;
@@ -54,7 +54,7 @@ int readConfig(void)
 
 	config_init(cFi);
 
-	if (!config_read_file(cFi, "lameParameter.cfg")) {
+	if (!config_read_file(cFi, "../cfg/lameParameter.cfg")) {
 		fprintf(stderr, "%s:%d - %s\n",
 				config_error_file(cFi),
 				config_error_line(cFi),
@@ -132,8 +132,8 @@ char *renameFile(char *fName)
 	rmDot = strrchr (fLocal, '.');
 	if ( NULL != rmDot)
 		*rmDot = '\0';
-	strcat(rmDot,fNewExt);
-	return rmDot;
+	strcat(fLocal,fNewExt);
+	return fLocal;
 }
 
 /***********************************************************************
@@ -152,10 +152,10 @@ void *mp3Fromwav(void* arg){
 	char *address = inData-> st_folderName;
 	int read, write;
 
-	// obtain the abosolut path of the file to be converted
+	/* obtain the abosolut path of the file to be converted*/
 	char AbsltAddrchange[255];
 	strcpy(AbsltAddrchange, address);
-	strcat(AbsltAddrchange, "/");
+//	strcat(AbsltAddrchange, "/");
 	strcat(AbsltAddrchange, fileName);
 
 	FILE *wav_Fd = fopen(AbsltAddrchange, "rb");
@@ -168,6 +168,7 @@ void *mp3Fromwav(void* arg){
 
 	char *fileNameNew=renameFile(fileName);
 	// obtain the abosolut path of the file to be created
+	printf("new=%s\n",fileNameNew);
 	char AbsltAddrNew[255];
 	strcpy(AbsltAddrNew, address);
 	strcat(AbsltAddrNew, "/");
@@ -184,7 +185,7 @@ void *mp3Fromwav(void* arg){
 
 	do {
 		read = fread(wav_Buffer, 2*sizeof(short int), WAV_SIZE, wav_Fd);
-		if (read == 0)
+		if (0 == read)
 		{
 			write = lame_encode_flush(lame, mp3_Buffer, MP3_SIZE);
 		}
@@ -193,7 +194,7 @@ void *mp3Fromwav(void* arg){
 		}
 		fwrite(mp3_Buffer, write, 1, mp3_Fd);
 
-	} while (read != 0);
+	} while (0 != read);
 
 	lameEncoderClose();
 	fclose(mp3_Fd);
@@ -292,10 +293,10 @@ int main(int argc, char *argv[])
 			}
 			enTfd = readdir(directoryFd); /*close directory */
 		}
-
 		printf(" Number of .wav files is found: %d\n", numberFile);
-
-	}else{
+	}
+	else
+	{
 		printf("please check the directory location\n");
 	}
 

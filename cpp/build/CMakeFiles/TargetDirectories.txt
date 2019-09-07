@@ -1,7 +1,1 @@
-/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/build/CMakeFiles/install.dir
-/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/build/CMakeFiles/list_install_components.dir
-/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/build/CMakeFiles/rebuild_cache.dir
-/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/build/CMakeFiles/wav2Mp3.dir
-/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/build/CMakeFiles/install/strip.dir
-/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/build/CMakeFiles/install/local.dir
-/home/tarang/Documents/github/mp3Fromwav_Linux/cpp/build/CMakeFiles/edit_cache.dir
+/home/omkar/Tarang/mp3Fromwav_Linux/cpp/build/CMakeFiles/wav2Mp3.dir
