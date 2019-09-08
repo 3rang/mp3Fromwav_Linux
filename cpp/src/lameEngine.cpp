@@ -14,12 +14,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <dirent.h>
 #include <lame/lame.h>
 #include <time.h>
 #include <thread>
-#include <libconfig.h>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -39,28 +37,33 @@ typedef struct _tHread_Data_t {
         char* st_folderName;
 } tHread_Data_t;
 
-int SamplingRate;
+int SamplingRate = 0;
 
 /********************************LAME Library Class*****************************************/
 
 class lameEngine
 {
+	private:
+    	lame_t  lame_;
+	
 	public:
-     lameEngine();
-    ~lameEngine();
+     	 lameEngine();
+    	
+	~lameEngine();
 
-    int set_in_samplerate( int sample_rate );
-    int set_brate( int byte_rate );
+   	 int set_in_samplerate( int sample_rate );
+   	 int set_brate( int byte_rate );
 
-    int set_num_channels( int channels );
-    int set_mode( MPEG_mode_e mode );
+  	 int set_num_channels( int channels );
+   	 int set_mode( MPEG_mode_e mode );
 
-    int set_decode_only( int );
+    	int set_decode_only( int );
 
-    int set_VBR( vbr_mode_e mode );
-    int init_params();
-    int encode_flush( unsigned char * mp3buf, int size );
-    int encode_buffer_interleaved(
+    	int set_VBR( vbr_mode_e mode );
+    	int init_params();
+    	int encode_flush( unsigned char * mp3buf, int size );
+    	
+	int encode_buffer_interleaved(
             short int           pcm[],         /* PCM data for left and right
                                                   channel, interleaved          */
             int                 num_samples,   /* number of samples per channel,
@@ -69,8 +72,6 @@ class lameEngine
             unsigned char*      mp3buf,        /* pointer to encoded MP3 stream */
             int                 mp3buf_size ); /* number of valid octets in this
                                                   stream                        */
-private:
-    lame_t  lame_;
 };
 
 /***********************************Wrapper for LAME API********************************/
@@ -82,7 +83,7 @@ lameEngine::lameEngine()
 
 lameEngine::~lameEngine()
 {
-    lame_close( lame_ );
+    lame_close(lame_);
 }
 
 int lameEngine::set_in_samplerate( int sample_rate )
@@ -193,14 +194,13 @@ char *renameFile(char *fName)
         char *fLocal,*rmDot;
 	string fNewExt = ".mp3";
 
-	printf("in fname =%s",fName);
         if(NULL == fName)
                 return NULL; 
         if(NULL == (fLocal = new char[(strlen (fName) + 1 )]))
                 return NULL;
-        strcpy(fLocal,fName);
+        
+	strcpy(fLocal,fName);
         rmDot = strrchr (fLocal, '.');
-	printf("rmdot=%s\n",rmDot);
         if ( NULL != rmDot)
                 *rmDot = '\0';
         strcat(fLocal,fNewExt.c_str());
@@ -223,14 +223,22 @@ char *renameFile(char *fName)
 void *mp3Fromwav(void *arg){
 
 	tHread_Data_t *inData = (tHread_Data_t*) arg;
-        char *fileName = inData->st_fileName;
-        char *address = inData-> st_folderName;
-        int read, write;
+        
+	char *fileName = inData->st_fileName;
+        
+	char *address = inData-> st_folderName;
+        
+	int read, write;
+        
+	char AbsltAddrchange[255];
+  	
+	char AbsltAddrNew[255];
 
-        // obtain the abosolut path of the file to be converted
-        char AbsltAddrchange[255];
+	short int wav_Buffer[WAV_SIZE*2];
+        unsigned char mp3_Buffer[MP3_SIZE];
+        
+	// obtain the abosolut path of the file to be converted
         strcpy(AbsltAddrchange, address);
-        //strcat(AbsltAddrchange, "/");
         strcat(AbsltAddrchange, fileName);
 
         FILE *wav_Fd = fopen(AbsltAddrchange, "rb");
@@ -244,15 +252,14 @@ void *mp3Fromwav(void *arg){
         char *fileNameNew=renameFile(fileName);
         
 	// obtain the abosolut path of the file to be created
-  	char AbsltAddrNew[255];
         strcpy(AbsltAddrNew, address);
         strcat(AbsltAddrNew, "/");
         strcat(AbsltAddrNew, fileNameNew);
+	
+	delete fileNameNew;
 
         FILE *mp3_Fd = fopen(AbsltAddrNew, "wb");
  
-	short int wav_Buffer[WAV_SIZE*2];
-        unsigned char mp3_Buffer[MP3_SIZE];
 
 	lameEngine lameObj;
 	
@@ -263,12 +270,12 @@ void *mp3Fromwav(void *arg){
 
     do {
         read = fread(wav_Buffer, 2*sizeof(short int), WAV_SIZE, wav_Fd);
-        if (read == 0)
+        if (0 == read)
             write = lameObj.encode_flush(mp3_Buffer, MP3_SIZE);
         else
             write = lameObj.encode_buffer_interleaved(wav_Buffer, read, mp3_Buffer, MP3_SIZE);
         fwrite(mp3_Buffer, write, 1, mp3_Fd);
-    } while (read != 0);
+    } while (0 != read);
 
  
     fclose(mp3_Fd);
@@ -293,14 +300,15 @@ void *mp3Fromwav(void *arg){
 int main(int argc,char* argv[])
 {
 	clock_t startClk,stopClk;
-	double duraTion;
-        int numberFile =0;
+	
+	double duraTion = 0;
+        
+	int numberFile =0;
 
         // Obtain the number of wav files
         DIR *directoryFd;
 	
-		
-	if (argc != 2) {
+	if (2 != argc) {
         cout << "Usage:  " << argv[0] <<"   </path of .wave file>  " << endl;
         return -1;
     	}
@@ -316,12 +324,16 @@ int main(int argc,char* argv[])
         directoryFd = opendir(l_folderAddr.c_str());
 	
 	 if (directoryFd != NULL){
-                char *l_fileName;
-                struct dirent *enTfd;
-                enTfd = readdir(directoryFd);
+                
+		char *l_fileName;
+                
+		struct dirent *enTfd;
+                
+		enTfd = readdir(directoryFd);
 
                 while (enTfd){
-                        l_fileName = enTfd->d_name;
+                
+			l_fileName = enTfd->d_name;
 
                         // Iterate all the files in the given folder
                         if(strlen(l_fileName) >= strlen(".wav")){
@@ -340,11 +352,9 @@ int main(int argc,char* argv[])
 
                                         thread thR(mp3Fromwav, &thR_Data);
 					thR.join();
-		
-                                        
-
-                                        free(thR_Data.st_fileName);
-                                        free(thR_Data.st_folderName);
+		                         
+					delete thR_Data.st_fileName;
+					delete thR_Data.st_folderName;
                                 }
                         }
                         enTfd = readdir(directoryFd);

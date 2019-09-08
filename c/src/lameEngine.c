@@ -34,7 +34,7 @@ typedef struct _tHread_Data_t {
 
 #define SoftwareVersion 3.0
 
-int SamplingRate;
+int SamplingRate = 0;
 
 /***********************************************************************
  *Function Name :- readConfig
@@ -152,10 +152,15 @@ void *mp3Fromwav(void* arg){
 	char *address = inData-> st_folderName;
 	int read, write;
 
-	/* obtain the abosolut path of the file to be converted*/
 	char AbsltAddrchange[255];
+	char AbsltAddrNew[255];
+	
+	short int wav_Buffer[WAV_SIZE*2];
+	unsigned char mp3_Buffer[MP3_SIZE];
+	
+	
+	/* obtain the abosolut path of the file to be converted*/
 	strcpy(AbsltAddrchange, address);
-//	strcat(AbsltAddrchange, "/");
 	strcat(AbsltAddrchange, fileName);
 
 	FILE *wav_Fd = fopen(AbsltAddrchange, "rb");
@@ -167,19 +172,16 @@ void *mp3Fromwav(void* arg){
 	}
 
 	char *fileNameNew=renameFile(fileName);
+	
 	// obtain the abosolut path of the file to be created
-	printf("new=%s\n",fileNameNew);
-	char AbsltAddrNew[255];
+	
 	strcpy(AbsltAddrNew, address);
 	strcat(AbsltAddrNew, "/");
 	strcat(AbsltAddrNew, fileNameNew);
 
+	free(fileNameNew);
+
 	FILE *mp3_Fd = fopen(AbsltAddrNew, "wb");
-	/*    printf("The newly generated file is: %s \n", addr);*/
-
-
-	short int wav_Buffer[WAV_SIZE*2];
-	unsigned char mp3_Buffer[MP3_SIZE];
 
 	lameEncoderInit();
 
@@ -197,10 +199,13 @@ void *mp3Fromwav(void* arg){
 	} while (0 != read);
 
 	lameEncoderClose();
+
 	fclose(mp3_Fd);
+	
 	fclose(wav_Fd);
 
 	pthread_exit(NULL);
+	
 	return(NULL);
 }
 
@@ -217,13 +222,15 @@ void *mp3Fromwav(void* arg){
 int main(int argc, char *argv[])
 {
 	clock_t startClk,stopClk;
-	double duraTion;
+
+	double duraTion = 0;
+
 	int numberFile =0;
 
 	// Obtain the number of wav files
 	DIR *directoryFd;
 
-	if( argc != 2 )
+	if(2 != argc)
 	{
 		fprintf( stderr, "Usage: %s <path_of_wav_files>\n", argv[0] );
 
@@ -245,11 +252,15 @@ int main(int argc, char *argv[])
 	/* open directory from given argument location*/
 	directoryFd = opendir(l_folderAddr);
 
-	if (directoryFd != NULL){
+	if (NULL != directoryFd){
+	
 		char *l_fileName;
+	
 		struct dirent *enTfd;
+	
 		enTfd = readdir(directoryFd);  /*read given location files and copy into struct for locate .wav files*/
-		int rc;
+	
+		int rError;
 
 		while (enTfd){
 			l_fileName = enTfd->d_name;	/* file name of given folder location */
@@ -274,14 +285,14 @@ int main(int argc, char *argv[])
 				
 					/* thread create */
 	
-					if ( (rc = pthread_create(&thR, NULL,mp3Fromwav, &thR_Data)) ) {
-						fprintf(stderr, "error: pthread_create, rc: %d\n", rc);
+					if ( (rError = pthread_create(&thR, NULL,mp3Fromwav, &thR_Data)) ) {
+						fprintf(stderr, "error: pthread_create, rc: %d\n", rError);
 						return EXIT_FAILURE;
 					}
 					else{
 						/* waiting to complete thread and join here */
 						if ( pthread_join ( thR, NULL ) ) { 
-							fprintf(stderr, "error joining thread, rc: %d\n", rc);
+							fprintf(stderr, "error joining thread, rc: %d\n", rError);
 							return EXIT_FAILURE;
 
 						}
