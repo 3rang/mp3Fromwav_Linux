@@ -25,8 +25,10 @@ then
     echo "lame exists." 
     rm -rf ${PWD}/lame
 else
-    echo "Ok to go fot install lame."
+    echo "lame clean."
 fi
+
+
 
 git clone https://github.com/rhishi/lame.git
 cd lame/
