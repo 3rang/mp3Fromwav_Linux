@@ -20,13 +20,21 @@ else
 	sudo apt-get install whiptail
 fi
 
+if [ -d "${PWD}/lame" ] 
+then
+    echo "lame exists." 
+    rm -rf ${PWD}/lame
+else
+    echo "Ok to go fot install lame."
+fi
+
 git clone https://github.com/rhishi/lame.git
-cd lame/lame/
+cd lame/
 ./configure
 make
 cd -
-cp lame/lame/libmp3lame/.libs/libmp3lame.a c/lib/
-cp lame/lame/libmp3lame/.libs/libmp3lame.a cpp/lib/
+cp lame/libmp3lame/.libs/libmp3lame.a c/lib/
+cp lame/libmp3lame/.libs/libmp3lame.a cpp/lib/
 
 
 envir () {
