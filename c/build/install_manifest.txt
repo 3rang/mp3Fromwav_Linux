@@ -1,1 +1,1 @@
-/home/danlaw/test/cine/mp3Fromwav_Linux/c/bin/wav2Mp3
+/home/tarang/cino/mp3Fromwav_Linux/c/bin/wav2Mp3

@@ -153,7 +153,7 @@ int readConfig(void)
   // Read the file. If there is an error, report it and exit.
   try
   {
-    cfg.readFile("lameParameter.cfg");
+    cfg.readFile("../cfg/lameParameter.cfg");
   }
   catch(const FileIOException &fioex)
   {
@@ -256,7 +256,6 @@ void *mp3Fromwav(void *arg){
         strcat(AbsltAddrNew, "/");
         strcat(AbsltAddrNew, fileNameNew);
 	
-	delete fileNameNew;
 
         FILE *mp3_Fd = fopen(AbsltAddrNew, "wb");
  
@@ -278,6 +277,7 @@ void *mp3Fromwav(void *arg){
     } while (0 != read);
 
  
+	delete fileNameNew;
     fclose(mp3_Fd);
     fclose(wav_Fd);
 
