@@ -19,6 +19,16 @@ else
     echo "Package  is NOT installed!"
 	sudo apt-get install whiptail
 fi
+
+git clone https://github.com/rhishi/lame.git
+cd lame/lame/
+./configure
+make
+cd -
+cp lame/lame/libmp3lame/.libs/libmp3lame.a c/lib/
+cp lame/lame/libmp3lame/.libs/libmp3lame.a cpp/lib/
+
+
 envir () {
   echo "/*********** setuping  environment...*************/"
   USER=`id -u`

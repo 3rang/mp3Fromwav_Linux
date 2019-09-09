@@ -17,7 +17,7 @@
 #include <dirent.h>
 #include <lame/lame.h>
 #include <time.h>
-#include <thread>
+#include <pthread.h>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -243,10 +243,10 @@ void *mp3Fromwav(void *arg){
 
         FILE *wav_Fd = fopen(AbsltAddrchange, "rb");
         if(!wav_Fd){
-                printf("%s is not found!\n", AbsltAddrchange);
+                cout <<"not found!" << AbsltAddrchange <<endl;
         }
         else{
-                printf("\nstart to convert %s : \n", AbsltAddrchange);
+                cout <<"start to convert " << AbsltAddrchange <<endl;
         }
 
         char *fileNameNew=renameFile(fileName);
@@ -328,7 +328,9 @@ int main(int argc,char* argv[])
 		char *l_fileName;
                 
 		struct dirent *enTfd;
-                
+        
+		int rError;        
+	
 		enTfd = readdir(directoryFd);
 
                 while (enTfd){
@@ -341,7 +343,7 @@ int main(int argc,char* argv[])
                                 {
 
                                         numberFile ++;
-
+				 	pthread_t thR;	
                                         tHread_Data_t thR_Data; // array of parameters to be passed into thread
 
                                         thR_Data.st_fileName = new char[(strlen(l_fileName) + 1)];
@@ -350,9 +352,19 @@ int main(int argc,char* argv[])
                                         thR_Data.st_folderName = new char[l_folderAddr.size() + 1];
                                         strcpy(thR_Data.st_folderName, l_folderAddr.c_str());
 
-                                        thread thR(mp3Fromwav, &thR_Data);
-					thR.join();
-		                         
+		                        if ( (rError = pthread_create(&thR, NULL,mp3Fromwav, &thR_Data)) ) {
+                                                fprintf(stderr, "error: pthread_create, rc: %d\n", rError);
+                                                return EXIT_FAILURE;
+                                        }
+                                        else{
+                                                /* waiting to complete thread and join here */
+                                                if ( pthread_join ( thR, NULL ) ) {
+                                                        fprintf(stderr, "error joining thread, rc: %d\n", rError);
+                                                        return EXIT_FAILURE;
+
+                                                }
+                                        }
+ 
 					delete thR_Data.st_fileName;
 					delete thR_Data.st_folderName;
                                 }

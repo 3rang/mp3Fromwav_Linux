@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/danlaw/test/cine/mp3Fromwav_Linux/cpp/src/lameEngine.cpp
+iostream
+-
+iomanip
+-
+cstdlib
+-
+libconfig.h++
+-
+lame/lame.h
+-
+string.h
+-
+stdio.h
+-
+stdlib.h
+-
+dirent.h
+-
+lame/lame.h
+-
+time.h
+-
+pthread.h
+-
+windows.h
+-
+unistd.h
+-
+
